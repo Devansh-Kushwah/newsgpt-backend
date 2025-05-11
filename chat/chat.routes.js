@@ -6,6 +6,6 @@ const { chatSessions } = require("./controller/chat.controller");
 
 router.post("/", chat);
 router.post("/history", chatHistory);
-router.get("/sessions", chatSessions);
+router.post("/sessions", chatSessions);
 
 module.exports = router;

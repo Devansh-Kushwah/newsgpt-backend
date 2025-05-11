@@ -136,27 +136,30 @@ exports.chatHistory = async (req, res) => {
 
 exports.chatSessions = async (req, res) => {
   try {
+    const { deviceId } = req.body;
     const keys = await redis.keys("chatSession:*");
     const sessions = await Promise.all(
-      keys.map(async (key) => {
-        const session = await redis.get(key);
-        const sessionData = JSON.parse(session);
-        const messages = sessionData.messages || [];
-        let title = messages.length > 0 ? messages[0].content : "New Chat";
+      keys
+        .filter((key) => key.includes(deviceId))
+        .map(async (key) => {
+          const session = await redis.get(key);
+          const sessionData = JSON.parse(session);
+          const messages = sessionData.messages || [];
+          let title = messages.length > 0 ? messages[0].content : "New Chat";
 
-        if (title.length > 20) {
-          title = title.substring(0, 20) + "...";
-        }
+          if (title.length > 20) {
+            title = title.substring(0, 20) + "...";
+          }
 
-        return {
-          sessionId: key.split(":")[1],
-          lastMessage: title,
-          timestamp:
-            messages.length > 0
-              ? messages[0].timestamp
-              : new Date().toISOString(),
-        };
-      })
+          return {
+            sessionId: key.split("chatSession:")[1],
+            lastMessage: title,
+            timestamp:
+              messages.length > 0
+                ? messages[0].timestamp
+                : new Date().toISOString(),
+          };
+        })
     );
 
     res.json(sessions);
