@@ -1,3 +1,4 @@
 node_modules/
 .env
+.env.local
 config/keys/gen-lang-client-0160924069-b3983a140e8c.json

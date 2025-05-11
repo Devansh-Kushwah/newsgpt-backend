@@ -4,8 +4,13 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT;
+const HOST = process.env.HOST;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.listen(PORT, HOST, (error) => {
+  if (error) {
+    console.error("Error starting server:", error);
+    process.exit(1);
+  }
+  console.log(`🚀 Server running on http://${HOST}:${PORT}`);
 });
